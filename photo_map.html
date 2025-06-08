@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_60d77c86190e9a3f3e126244fa2daa20 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_60d77c86190e9a3f3e126244fa2daa20" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_60d77c86190e9a3f3e126244fa2daa20 = L.map(
+                "map_60d77c86190e9a3f3e126244fa2daa20",
+                {
+                    center: [59.3277257, 18.0909613],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 12,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_4d846775a0fecd560371da9e52053efc = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_4d846775a0fecd560371da9e52053efc.addTo(map_60d77c86190e9a3f3e126244fa2daa20);
+        
+    
+            var marker_27e044dbe7e7e7d9a5775bafaaa60177 = L.marker(
+                [59.3277257, 18.0909613],
+                {
+}
+            ).addTo(map_60d77c86190e9a3f3e126244fa2daa20);
+        
+    
+        var popup_3f195a4135a2236504719a1351491ab9 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_7c9bf2660049d7875e186997ed1e5ce0 = $(`<div id="html_7c9bf2660049d7875e186997ed1e5ce0" style="width: 100.0%; height: 100.0%;">20250117_110037.jpg<br>Lat: 59.327726<br>Lon: 18.090961<br>Altitude: 28.00 m</div>`)[0];
+                popup_3f195a4135a2236504719a1351491ab9.setContent(html_7c9bf2660049d7875e186997ed1e5ce0);
+            
+        
+
+        marker_27e044dbe7e7e7d9a5775bafaaa60177.bindPopup(popup_3f195a4135a2236504719a1351491ab9)
+        ;
+
+        
+    
+    
+            var marker_1b9429c47edfe11e9d1f8484d1983ffc = L.marker(
+                [59.3257728, 18.0665376],
+                {
+}
+            ).addTo(map_60d77c86190e9a3f3e126244fa2daa20);
+        
+    
+        var popup_455ca561351e4850022e28800d067641 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_61f73277c4e1086c36f3075d56de546d = $(`<div id="html_61f73277c4e1086c36f3075d56de546d" style="width: 100.0%; height: 100.0%;">20250208_141535.jpg<br>Lat: 59.325773<br>Lon: 18.066538</div>`)[0];
+                popup_455ca561351e4850022e28800d067641.setContent(html_61f73277c4e1086c36f3075d56de546d);
+            
+        
+
+        marker_1b9429c47edfe11e9d1f8484d1983ffc.bindPopup(popup_455ca561351e4850022e28800d067641)
+        ;
+
+        
+    
+    
+            var marker_b32a0604d368419954502eb7ebd57325 = L.marker(
+                [59.3251642, 18.070366199722223],
+                {
+}
+            ).addTo(map_60d77c86190e9a3f3e126244fa2daa20);
+        
+    
+        var popup_c20a79eb1e27c7d0b04fcc9005266ca9 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_d7f5925041c81877bbd3230b5cc945a2 = $(`<div id="html_d7f5925041c81877bbd3230b5cc945a2" style="width: 100.0%; height: 100.0%;">20250208_150122.jpg<br>Lat: 59.325164<br>Lon: 18.070366<br>Altitude: 55.00 m</div>`)[0];
+                popup_c20a79eb1e27c7d0b04fcc9005266ca9.setContent(html_d7f5925041c81877bbd3230b5cc945a2);
+            
+        
+
+        marker_b32a0604d368419954502eb7ebd57325.bindPopup(popup_c20a79eb1e27c7d0b04fcc9005266ca9)
+        ;
+
+        
+    
+    
+            var marker_92e2effe4c53f8109216e54909ab5ec6 = L.marker(
+                [59.3694009, 18.0657795],
+                {
+}
+            ).addTo(map_60d77c86190e9a3f3e126244fa2daa20);
+        
+    
+        var popup_7a9d4709805731858b3637b66bb6e5b0 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_3a87082f77e99bdf90526e38c904247a = $(`<div id="html_3a87082f77e99bdf90526e38c904247a" style="width: 100.0%; height: 100.0%;">20250220_184408.jpg<br>Lat: 59.369401<br>Lon: 18.065780<br>Altitude: 49.00 m</div>`)[0];
+                popup_7a9d4709805731858b3637b66bb6e5b0.setContent(html_3a87082f77e99bdf90526e38c904247a);
+            
+        
+
+        marker_92e2effe4c53f8109216e54909ab5ec6.bindPopup(popup_7a9d4709805731858b3637b66bb6e5b0)
+        ;
+
+        
+    
+    
+            var marker_10d3ec8bc3e49e72c5d80166b7322cf9 = L.marker(
+                [65.8302525, 13.1914367],
+                {
+}
+            ).addTo(map_60d77c86190e9a3f3e126244fa2daa20);
+        
+    
+        var popup_b545189b33127d5fc51b5f907258f95a = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_b1bf6ebec87ae64acc9343bb23eb9332 = $(`<div id="html_b1bf6ebec87ae64acc9343bb23eb9332" style="width: 100.0%; height: 100.0%;">20250302_114738.jpg<br>Lat: 65.830253<br>Lon: 13.191437<br>Altitude: 43.00 m</div>`)[0];
+                popup_b545189b33127d5fc51b5f907258f95a.setContent(html_b1bf6ebec87ae64acc9343bb23eb9332);
+            
+        
+
+        marker_10d3ec8bc3e49e72c5d80166b7322cf9.bindPopup(popup_b545189b33127d5fc51b5f907258f95a)
+        ;
+
+        
+    
+    
+            var marker_324d66de3805138c0fa6b25be6d9702e = L.marker(
+                [65.81598149999999, 15.089713299722224],
+                {
+}
+            ).addTo(map_60d77c86190e9a3f3e126244fa2daa20);
+        
+    
+        var popup_17df6c6fa66544aec1439aec5d008784 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_9a36e439e405b3dd29f696ebbd2e8d5b = $(`<div id="html_9a36e439e405b3dd29f696ebbd2e8d5b" style="width: 100.0%; height: 100.0%;">20250304_171137.jpg<br>Lat: 65.815981<br>Lon: 15.089713<br>Altitude: 494.00 m</div>`)[0];
+                popup_17df6c6fa66544aec1439aec5d008784.setContent(html_9a36e439e405b3dd29f696ebbd2e8d5b);
+            
+        
+
+        marker_324d66de3805138c0fa6b25be6d9702e.bindPopup(popup_17df6c6fa66544aec1439aec5d008784)
+        ;
+
+        
+    
+    
+            var marker_eb75c9b7afd4f27ad577164ef988fe6d = L.marker(
+                [59.369393899722226, 18.066359599722222],
+                {
+}
+            ).addTo(map_60d77c86190e9a3f3e126244fa2daa20);
+        
+    
+        var popup_6b542c39c89d0a9e4e489e631f468cca = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_478b874f18015cd3449345816bf457cc = $(`<div id="html_478b874f18015cd3449345816bf457cc" style="width: 100.0%; height: 100.0%;">20250319_052515.jpg<br>Lat: 59.369394<br>Lon: 18.066360<br>Altitude: 54.00 m</div>`)[0];
+                popup_6b542c39c89d0a9e4e489e631f468cca.setContent(html_478b874f18015cd3449345816bf457cc);
+            
+        
+
+        marker_eb75c9b7afd4f27ad577164ef988fe6d.bindPopup(popup_6b542c39c89d0a9e4e489e631f468cca)
+        ;
+
+        
+    
+    
+            var marker_e453ab93645756ac88cc0bb3098e8789 = L.marker(
+                [41.38440419972222, 2.1759892],
+                {
+}
+            ).addTo(map_60d77c86190e9a3f3e126244fa2daa20);
+        
+    
+        var popup_79931167fb80f75217015f77535a6bb9 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_dfc77e74569572d6a7d6df88e3f6d27c = $(`<div id="html_dfc77e74569572d6a7d6df88e3f6d27c" style="width: 100.0%; height: 100.0%;">20250320_110448.jpg<br>Lat: 41.384404<br>Lon: 2.175989<br>Altitude: 101.00 m</div>`)[0];
+                popup_79931167fb80f75217015f77535a6bb9.setContent(html_dfc77e74569572d6a7d6df88e3f6d27c);
+            
+        
+
+        marker_e453ab93645756ac88cc0bb3098e8789.bindPopup(popup_79931167fb80f75217015f77535a6bb9)
+        ;
+
+        
+    
+</script>
+</html>

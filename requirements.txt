@@ -1,0 +1,4 @@
+exifread
+folium
+pillow
+piexif
