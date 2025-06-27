@@ -61,4 +61,3 @@ def map_images(folder_path, output_file='photo_map.html'):
     print(f"Map saved to {output_file}")
 
 # Example usage
-map_images("assets")
