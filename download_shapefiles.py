@@ -3,7 +3,7 @@ import zipfile
 import io
 import os
 
-def download_natural_earth_populated_places(output_dir="shapefiles"):
+def download_natural_earth_populated_places(output_dir="assets"):
     url = "https://naturalearth.s3.amazonaws.com/10m_cultural/ne_10m_populated_places.zip"
     
     os.makedirs(output_dir, exist_ok=True)
