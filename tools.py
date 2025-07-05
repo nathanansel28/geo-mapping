@@ -1,63 +1,47 @@
+import subprocess
 import os
-import folium
-import piexif
-from PIL import Image
+import sys
 
-def get_decimal_from_dms(dms, ref):
-    degrees, minutes, seconds = dms
-    decimal = degrees[0]/degrees[1] + \
-              minutes[0]/minutes[1]/60 + \
-              seconds[0]/seconds[1]/3600
-    if ref in ['S', 'W']:
-        decimal = -decimal
-    return decimal
+def open_html_in_chrome(html_path, chrome_path=None, user_data_dir=None):
+    """
+    Open an HTML file in Google Chrome using your own user profile.
 
-def extract_gps_data(image_path):
-    try:
-        img = Image.open(image_path)
-        exif_data = piexif.load(img.info['exif'])
+    Args:
+        html_path (str): Path to the HTML file.
+        chrome_path (str): Full path to Chrome executable.
+        user_data_dir (str): Path to Chrome's user profile directory.
 
-        gps_data = exif_data.get("GPS")
-        if not gps_data:
-            return None
+    Raises:
+        FileNotFoundError: If the HTML file or Chrome executable is not found.
+    """
+    if not os.path.isfile(html_path):
+        raise FileNotFoundError(f"HTML file not found: {html_path}")
 
-        lat = get_decimal_from_dms(gps_data[piexif.GPSIFD.GPSLatitude], gps_data[piexif.GPSIFD.GPSLatitudeRef].decode())
-        lon = get_decimal_from_dms(gps_data[piexif.GPSIFD.GPSLongitude], gps_data[piexif.GPSIFD.GPSLongitudeRef].decode())
+    # Guess Chrome path if not provided
+    if chrome_path is None:
+        if sys.platform == "win32":
+            chrome_path = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+        elif sys.platform == "darwin":
+            chrome_path = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+        else:  # Linux
+            chrome_path = "/usr/bin/google-chrome"
 
-        alt = None
-        if piexif.GPSIFD.GPSAltitude in gps_data:
-            alt_val = gps_data[piexif.GPSIFD.GPSAltitude]
-            alt = alt_val[0] / alt_val[1]
+    if not os.path.isfile(chrome_path):
+        raise FileNotFoundError(f"Chrome executable not found at: {chrome_path}")
 
-        return lat, lon, alt
-    except Exception as e:
-        print(f"Error reading {image_path}: {e}")
-        return None
+    # Default to your main Chrome profile if not provided
+    if user_data_dir is None:
+        if sys.platform == "win32":
+            user_data_dir = os.path.expandvars(r"%LOCALAPPDATA%\Google\Chrome\User Data")
+        elif sys.platform == "darwin":
+            user_data_dir = os.path.expanduser("~/Library/Application Support/Google/Chrome")
+        else:  # Linux
+            user_data_dir = os.path.expanduser("~/.config/google-chrome")
 
-def map_images(folder_path, output_file='photo_map.html'):
-    markers = []
+    command = [
+        chrome_path,
+        f"--user-data-dir={user_data_dir}",
+        os.path.abspath(html_path)
+    ]
 
-    for filename in os.listdir(folder_path):
-        if filename.lower().endswith(('jpg', 'jpeg')):
-            full_path = os.path.join(folder_path, filename)
-            gps = extract_gps_data(full_path)
-            if gps:
-                lat, lon, alt = gps
-                popup = f"{filename}<br>Lat: {lat:.6f}<br>Lon: {lon:.6f}"
-                if alt:
-                    popup += f"<br>Altitude: {alt:.2f} m"
-                markers.append((lat, lon, popup))
-
-    if not markers:
-        print("No images with valid GPS data found.")
-        return
-
-    photo_map = folium.Map(location=[markers[0][0], markers[0][1]], zoom_start=12)
-
-    for lat, lon, popup in markers:
-        folium.Marker([lat, lon], popup=popup).add_to(photo_map)
-
-    photo_map.save(output_file)
-    print(f"Map saved to {output_file}")
-
-# Example usage
+    subprocess.Popen(command)
