@@ -1,51 +1,14 @@
-from typing import Tuple, Union, List
-
-from PIL import Image
-from collections import defaultdict
-from datetime import datetime
-from folium import CircleMarker, Map, Marker, DivIcon
-from shapely.geometry import Point
-
-import os
-import piexif
 import folium
+import pandas as pd
+from typing import Union
+from folium import CircleMarker
+from geopandas import GeoDataFrame
 import geopandas as gpd
+from shapely.geometry import Point
+from folium import Map, CircleMarker, Marker, DivIcon
+from collections import defaultdict
 import numpy as np
-import piexif
-
-
-def extract_gps_data(
-    image_path: str
-) -> Union[Tuple[float, float, float], None]:
-    """For a given image, return a tuple of the latitude, longitude, and altitude, if geodata is avaialble. Else return None."""
-    try:
-        exif_data = piexif.load(image_path)
-        gps = exif_data.get('GPS')
-        if not gps:
-            return None
-
-        def convert_to_degrees(value):
-            d, m, s = value
-            return d[0]/d[1] + m[0]/(m[1]*60) + s[0]/(s[1]*3600)
-
-        lat = convert_to_degrees(gps[2])
-        if gps[1] == b'S':
-            lat = -lat
-
-        lon = convert_to_degrees(gps[4])
-        if gps[3] == b'W':
-            lon = -lon
-
-        alt = None
-        if 6 in gps:
-            alt_num, alt_den = gps[6]
-            alt = alt_num / alt_den if alt_den != 0 else None
-
-        return (lat, lon, alt)
-
-    except Exception as e:
-        print(f"Failed to extract GPS from {image_path}: {e}")
-        return None
+import pandas as pd
 
 
 def is_in_europe(lat, lon):
@@ -53,47 +16,42 @@ def is_in_europe(lat, lon):
 
 
 def map_photos(
-    folder_paths: List[str], output_file='europe_image_map.html'
+    df: pd.DataFrame, output_file: str = 'europe_image_map.html'
 ) -> None:
-    """Plots each photo as a dot on the map."""
-    if isinstance(folder_paths, str):
-        folder_paths = [folder_paths]
+    """
+    Given a DataFrame from get_media_metadata, plot photos with valid GPS in Europe.
+    """
+    # Filter for valid coordinates
+    df_valid = df.dropna(subset=["latitude", "longitude"])
+    df_valid = df_valid[df_valid.apply(lambda row: is_in_europe(row["latitude"], row["longitude"]), axis=1)]
 
-    markers = []
-
-    for folder_path in folder_paths:
-        for filename in os.listdir(folder_path):
-            if filename.lower().endswith(('jpg', 'jpeg')):
-                full_path = os.path.join(folder_path, filename)
-                gps = extract_gps_data(full_path)
-                if gps:
-                    lat, lon, _ = gps
-                    if is_in_europe(lat, lon):
-                        markers.append((lat, lon, filename))
-
-    if not markers:
-        print("No images with valid GPS data in Europe.")
+    if df_valid.empty:
+        print("No valid GPS-tagged media files in Europe.")
         return
 
-    avg_lat = sum(lat for lat, lon, _ in markers) / len(markers)
-    avg_lon = sum(lon for lat, lon, _ in markers) / len(markers)
+    # Calculate center of map
+    avg_lat = df_valid["latitude"].mean()
+    avg_lon = df_valid["longitude"].mean()
 
     m = folium.Map(location=[avg_lat, avg_lon], zoom_start=4, tiles='CartoDB positron')
 
-    for lat, lon, filename in markers:
+    for _, row in df_valid.iterrows():
         folium.CircleMarker(
-            location=(lat, lon),
+            location=(row["latitude"], row["longitude"]),
             radius=5,
             color='red',
             fill=True,
             fill_opacity=0.7,
-            popup=filename
+            popup=row["filename"]
         ).add_to(m)
 
     m.save(output_file)
     print(f"Interactive map saved to {output_file}")
 
 
+
+
+# Load and filter shapefile once
 city_shapes = gpd.read_file("assets/ne_10m_populated_places.shp").to_crs("EPSG:4326")
 city_shapes_europe = city_shapes[
     city_shapes.geometry.apply(lambda geom: is_in_europe(geom.y, geom.x))
@@ -116,32 +74,29 @@ def find_city(lat, lon, max_distance_km=50):
     return None
 
 
-def map_photos_with_bubbles(
-    folder_paths, output_file='city_bubbles_map.html'
+def map_photos_with_bubbles_from_df(
+    df: pd.DataFrame, output_file='city_bubbles_map.html'
 ) -> None:
-    if isinstance(folder_paths, str):
-        folder_paths = [folder_paths]
+    """Plot city bubble map using a DataFrame with lat/lon."""
+    df_valid = df.dropna(subset=["latitude", "longitude"])
+    df_valid = df_valid[df_valid.apply(lambda row: is_in_europe(row["latitude"], row["longitude"]), axis=1)]
+
+    if df_valid.empty:
+        print("No valid GPS-tagged media in Europe.")
+        return
 
     city_data = defaultdict(lambda: {"count": 0, "coords": []})
 
-    for folder in folder_paths:
-        for filename in os.listdir(folder):
-            if filename.lower().endswith(('jpg', 'jpeg')):
-                full_path = os.path.join(folder, filename)
+    for _, row in df_valid.iterrows():
+        lat, lon = row["latitude"], row["longitude"]
+        city = find_city(lat, lon)
 
-                gps = extract_gps_data(full_path)
-                if not gps:
-                    continue 
-
-                lat, lon, _ = gps
-                city = find_city(lat, lon)
-
-                if city:
-                    city_data[city]["count"] += 1
-                    city_data[city]["coords"].append((lat, lon))
+        if city:
+            city_data[city]["count"] += 1
+            city_data[city]["coords"].append((lat, lon))
 
     if not city_data:
-        print("No valid GPS-tagged photos found.")
+        print("No GPS-tagged photos matched to cities.")
         return
 
     m = Map(location=[54, 15], zoom_start=4, tiles="CartoDB positron")
