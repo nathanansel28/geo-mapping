@@ -144,6 +144,32 @@ def extract_gps_data_mp4(file_path: str) -> Union[Tuple[float, float, float], No
     return None
 
 
+from PIL import Image
+import numpy as np
+from sklearn.cluster import KMeans
+
+def extract_dominant_colors(image_path: str, k=3, resize=200):
+    """
+    Extract k dominant RGB colors from image_path using k-means clustering.
+    Resizes image to max dimension 'resize' to speed up processing.
+    Returns list of (R, G, B) tuples.
+    """
+    try:
+        with Image.open(image_path) as img:
+            img = img.convert("RGB")
+            img.thumbnail((resize, resize))
+            arr = np.array(img).reshape(-1, 3)
+        
+        kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
+        kmeans.fit(arr)
+        colors = kmeans.cluster_centers_.astype(int)
+        return [tuple(color) for color in colors]
+    except Exception as e:
+        print(f"[COLOR] Failed to extract colors from {image_path}: {e}")
+        return [(0, 0, 0)] * k  # fallback black colors
+
+
+
 def get_datetime(file_path):
     lower = file_path.lower()
     if lower.endswith((".jpg", ".jpeg")):
@@ -172,6 +198,7 @@ def get_gps(file_path):
         return None
 
 
+
 def get_media_metadata(file_paths):
     records = []
 
@@ -189,13 +216,24 @@ def get_media_metadata(file_paths):
                 dt = dt.astimezone(timezone.utc).replace(tzinfo=None)
             gps = get_gps(path)
             lat, lon, alt = (gps if gps else (None, None, None))
+
+            # Extract dominant colors only for photos (JPG/JPEG)
+            dominant_colors = None
+            if media_type == "photo" and lower.endswith((".jpg", ".jpeg")):
+                dominant_colors = extract_dominant_colors(path)
+            else:
+                dominant_colors = [(None, None, None)] * 3  # or empty
+
             records.append({
                 "datetime": dt,
                 "type": media_type,
                 "filename": os.path.basename(path),
                 "latitude": lat,
                 "longitude": lon,
-                "altitude": alt
+                "altitude": alt,
+                "color_1": dominant_colors[0],
+                "color_2": dominant_colors[1],
+                "color_3": dominant_colors[2],
             })
         else:
             print(f"[SKIP] No datetime found for {path}")
