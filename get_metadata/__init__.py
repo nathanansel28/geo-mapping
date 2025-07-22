@@ -1,11 +1,9 @@
 import os 
 import pandas as pd
 
-from get_datetime import (
-    extract_datetime_from_jpg, 
-    extract_datetime_from_mp4, 
-    extract_datetime_from_png_or_fallback
-)
+from get_datetime import get_datetime
+from get_gps import get_gps
+from get_colors import get_colors
 from datetime import timezone
 
 
@@ -13,35 +11,21 @@ def get_media_metadata(file_paths):
     records = []
 
     for path in file_paths:
-        lower = path.lower()
-        dt = None
-        media_type = None
+        dt, media_type = get_datetime(path)
+        lat, lon, alt = get_gps(path)
+        dominant_colors = get_colors(path)
+        
 
-        if lower.endswith((".jpg", ".jpeg")):
-            dt = extract_datetime_from_jpg(path)
-            if not dt:
-                print(f"[JPG] Falling back to mod time for {path}")
-                dt = extract_datetime_from_png_or_fallback(path)
-            media_type = "photo"
-
-        elif lower.endswith(".mp4"):
-            dt = extract_datetime_from_mp4(path)
-            media_type = "video"
-
-        elif lower.endswith(".png"):
-            dt = extract_datetime_from_png_or_fallback(path)
-            media_type = "photo"
-
-        if dt:
-            if dt.tzinfo:
-                dt = dt.astimezone(timezone.utc).replace(tzinfo=None)
-            records.append({
-                "datetime": dt,
-                "type": media_type,
-                "filename": os.path.basename(path)
-            })
-        else:
-            print(f"[SKIP] No datetime found for {path}")
+        records.append({
+            "datetime": dt,
+            "type": media_type,
+            "filename": os.path.basename(path),
+            "latitude": lat,
+            "longitude": lon,
+            "altitude": alt,
+            "color_1": dominant_colors[0],
+            "color_2": dominant_colors[1],
+            "color_3": dominant_colors[2],
+        })
 
     return pd.DataFrame(records)
-

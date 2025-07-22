@@ -2,12 +2,16 @@ from PIL import Image
 import numpy as np
 from sklearn.cluster import KMeans
 
-def extract_dominant_colors(image_path: str, k=3, resize=200):
+
+def get_colors(image_path: str, k=3, resize=200):
     """
     Extract k dominant RGB colors from image_path using k-means clustering.
     Resizes image to max dimension 'resize' to speed up processing.
     Returns list of (R, G, B) tuples.
     """
+    if not image_path.lower().endswith((".jpg", ".jpeg")):
+        return [(None, None, None)] * k
+
     try:
         with Image.open(image_path) as img:
             img = img.convert("RGB")

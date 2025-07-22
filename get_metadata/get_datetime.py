@@ -1,7 +1,6 @@
+from typing import Optional, Tuple
 import os
 import exifread
-# from hachoir.metadata import extractMetadata
-# from hachoir.parser import createParser
 import subprocess
 import json
 
@@ -12,7 +11,37 @@ import matplotlib.dates as mdates
 import seaborn as sns
 
 
-def extract_datetime_from_jpg(file_path):
+def get_datetime(filepath) -> Tuple[Optional[datetime], str]:
+    """Returns the datetime and media type of a given file."""
+    dt = None
+    filepath_lower = filepath.lower() 
+    if filepath_lower.endswith((".jpg", ".jpeg")):
+        dt = extract_datetime_from_jpg(filepath)
+        if not dt:
+            print(f"[JPG] Falling back to mod time for {filepath}")
+            dt = extract_datetime_from_png_or_fallback(filepath)
+        media_type = "photo"
+
+    elif filepath_lower.endswith(".mp4"):
+        dt = extract_datetime_from_mp4(filepath)
+        media_type = "video"
+
+    elif filepath_lower.endswith(".png"):
+        dt = extract_datetime_from_png_or_fallback(filepath)
+        media_type = "photo"
+    else:
+        raise ValueError(f"Unsupported file type for: {filepath}")
+
+    if dt:
+        if dt.tzinfo:
+            dt = dt.astimezone(timezone.utc).replace(tzinfo=None)
+        else:
+            print(f"[WARNING] No datetime found for {filepath}")
+
+    return dt, media_type
+
+
+def extract_datetime_from_jpg(file_path) -> Optional[datetime]:
     try:
         with open(file_path, 'rb') as f:
             tags = exifread.process_file(f, stop_tag="EXIF DateTimeOriginal", details=False)
@@ -30,7 +59,7 @@ def extract_datetime_from_jpg(file_path):
     return None
 
 
-def extract_datetime_from_mp4(file_path):
+def extract_datetime_from_mp4(file_path) -> Optional[datetime]:
     try:
         result = subprocess.run(
             [
@@ -56,7 +85,7 @@ def extract_datetime_from_mp4(file_path):
         return None
 
 
-def extract_datetime_from_png_or_fallback(file_path):
+def extract_datetime_from_png_or_fallback(file_path) -> Optional[datetime]:
     try:
         timestamp = os.path.getmtime(file_path)
         return datetime.fromtimestamp(timestamp)
