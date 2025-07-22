@@ -2,3 +2,9 @@ exifread
 folium
 pillow
 piexif
+
+hachoir
+pandas 
+seaborn
+matplotlib
+scikit-learn
