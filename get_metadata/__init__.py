@@ -1,9 +1,13 @@
 import os 
 import pandas as pd
+# import get_datetime
+# import get_gps
+# import get_colors
 
-from get_datetime import get_datetime
-from get_gps import get_gps
-from get_colors import get_colors
+
+from get_metadata.get_datetime import get_datetime
+from get_metadata.get_gps import get_gps
+from get_metadata.get_colors import get_colors
 from datetime import timezone
 
 

@@ -21,7 +21,7 @@ def download_natural_earth_populated_places(output_dir="assets"):
     return os.path.join(output_dir, "ne_10m_populated_places.shp")
 
 
-def download_gadm_shapefile(iso_code='SWE', level=2, output_dir='gadm_data'):
+def download_gadm_shapefile(iso_code='SWE', level=2, output_dir='assets/gadm_data'):
     """
     Download and extract GADM shapefile for a specific country and administrative level.
 
